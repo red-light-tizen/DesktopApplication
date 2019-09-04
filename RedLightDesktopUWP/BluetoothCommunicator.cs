@@ -22,13 +22,13 @@ namespace RedLightDesktopUWP
         private DataWriter dataWriter = null;
         private RfcommDeviceService RfService = null;
         private BluetoothDevice bluetoothDevice;
-        private ListBox listBox;
+        private DataRegister dataRegister;
 
-        public BluetoothCommunicator(Guid guid, ref ListBox listBox)
+        public BluetoothCommunicator(Guid guid, ref DataRegister dataRegister)
         {
             //
             this.guid = guid;
-            this.listBox = listBox;
+            this.dataRegister = dataRegister;
         }
 
         public async void Connect(String devID)
@@ -101,7 +101,9 @@ namespace RedLightDesktopUWP
                 await streamSocket.ConnectAsync(RfService.ConnectionHostName, RfService.ConnectionServiceName);
 
                 //SetChatUI(attributeReader.ReadString(serviceNameLength), bluetoothDevice.Name);
-                listBox.Items.Add($"Connected : {devID}");
+
+                dataRegister.conditionText.Text = "Checking Connection...";
+                
                 dataWriter = new DataWriter(streamSocket.OutputStream);
 
                 DataReader chatReader = new DataReader(streamSocket.InputStream);
@@ -126,7 +128,6 @@ namespace RedLightDesktopUWP
                 if (message.Length != 0)
                 {
                     dataWriter.WriteString(message);
-                    listBox.Items.Add($"sent : {message}");
                     await dataWriter.StoreAsync();
 
                 }
@@ -135,6 +136,7 @@ namespace RedLightDesktopUWP
             {
 
             }
+            catch (Exception) { }
         }
 
         public async void ReceiveStringLoop(DataReader chatReader)
@@ -148,17 +150,15 @@ namespace RedLightDesktopUWP
                     return;
                 }
 
-                //uint stringLength = chatReader.ReadUInt32();
-                //uint actualStringLength = await chatReader.LoadAsync(stringLength);
-                //if (actualStringLength != stringLength)
-                //{
-                //    // The underlying socket was closed before we were able to read the whole data
-                //    return;
-                //}
+                uint stringLength = chatReader.ReadUInt32();
+                uint actualStringLength = await chatReader.LoadAsync(stringLength);
+                if (actualStringLength != stringLength)
+                {
+                    // The underlying socket was closed before we were able to read the whole data
+                    return;
+                }
 
-                //ConversationList.Items.Add("Received: " + chatReader.ReadString(stringLength));
-                // data process / display here
-                listBox.Items.Add($"Recv : {chatReader.ReadString(60)}");
+                dataRegister.UpdateData(chatReader.ReadString(stringLength));
 
                 ReceiveStringLoop(chatReader);
             }
@@ -170,9 +170,7 @@ namespace RedLightDesktopUWP
                     {
                         // Do not print anything here -  the user closed the socket.
                         if ((uint)ex.HResult == 0x80072745) { }
-                            //rootPage.NotifyUser("Disconnect triggered by remote device", NotifyType.StatusMessage);
                         else if ((uint)ex.HResult == 0x800703E3) { }
-                            //rootPage.NotifyUser("The I/O operation has been aborted because of either a thread exit or an application request.", NotifyType.StatusMessage);
                     }
                     else
                     {
@@ -204,9 +202,6 @@ namespace RedLightDesktopUWP
                     streamSocket = null;
                 }
             }
-            listBox.Items.Clear();
-            listBox.Items.Add("Disconnected");
-
 
         }
 

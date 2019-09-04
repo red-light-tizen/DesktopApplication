@@ -30,7 +30,9 @@ namespace RedLightDesktopUWP
        
 
         private BluetoothCommunicator communicator;
+        private DataRegister dataRegister;
         private bool isConnected;
+
 
         public ObservableCollection<RfcommDeviceDisplay> ResultCollection
         {
@@ -45,7 +47,18 @@ namespace RedLightDesktopUWP
 
             this.InitializeComponent();
             App.Current.Suspending += App_Suspending;
-            communicator = new BluetoothCommunicator(guid, ref ConversationList);
+            dataRegister = new DataRegister()
+                .SetConditionFontIcon(ref ConditionIcon)
+                .SetConditionTextBox(ref ConditionData)
+                .SetPulseTextBox(ref PulseData)
+                .SetSPO2TextBox(ref SPO2Data)
+                .SetTempTextBox(ref TempData)
+                .SetLocationTextBox(ref LocationData);
+
+            //            dataRegister.UpdateData("2019;243;59123051;2;098;3750;09820;0230;+3748208;+12688542;");
+            dataRegister.UpdateData("2019;243;59123051;2;098;3750;09820;0230;+4764300;-12213100;");
+
+            communicator = new BluetoothCommunicator(guid, ref dataRegister);
             isConnected = false;
         }
 
