@@ -26,6 +26,9 @@ namespace RedLightDesktopUWP
     {
 
         private Guid guid = Guid.Parse("E9E2ED52-12AA-405A-AB1F-0C70878EFFD9");
+        private Guid guid2 = Guid.Parse("9DE5F89C-E9BF-4073-9A27-C5ED076A3A19");
+       
+
         private BluetoothCommunicator communicator;
         private bool isConnected;
 
@@ -195,9 +198,7 @@ namespace RedLightDesktopUWP
 
         private void SetDeviceWatcherUI()
         {
-            // Disable the button while we do async operations so the user can't Run twice.
             SearchDeviceButton.Content = "Stop Searching";
-            //rootPage.NotifyUser("Device watcher started", NotifyType.StatusMessage);
             Devices.Visibility = Visibility.Visible;
             Devices.IsEnabled = true;
         }

@@ -86,9 +86,46 @@
                         </ScrollViewer>
                     </RelativePanel>
                 </SplitView.Pane>
-                <RelativePanel>
-                    <Frame x:Name="ScenarioFrame" Margin="5" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignLeftWithPanel="True"/>
-                </RelativePanel>
+                <Grid x:Name="StatusPanel">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1.8*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" x:Name="ConditionPanel" BorderBrush="AntiqueWhite" BorderThickness="1">
+                        <RelativePanel HorizontalAlignment="Center">
+                            <TextBox x:Name="ConditionTitle" BorderThickness="0" RelativePanel.AlignHorizontalCenterWithPanel="True" Text="현재상태" FontSize="70" Margin="0,50,0,0"/>
+                            <FontIcon x:Name="ConditionIcon"  FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="250" RelativePanel.Below="ConditionTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,0" />
+                            <TextBox x:Name="ConditionData" BorderThickness="0" RelativePanel.Below="ConditionIcon" Text="No Connection" FontSize="85"  Margin="0,0,0,50"/>
+                        </RelativePanel>
+                    </Border>
+                    <Border x:Name="SpecStatusPanel" Grid.Row="1" BorderBrush="AntiqueWhite" BorderThickness="1" Margin="0,0,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <RelativePanel x:Name="PulsePanel"  Grid.Column="0" HorizontalAlignment="Stretch">
+                                <TextBox x:Name="PulseTitle" Text="심박수" BorderThickness="0" FontSize="60" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,20,0,0" />
+                                <TextBox x:Name="PulseData" Text="0" RelativePanel.AlignBottomWithPanel="True" BorderThickness="0" FontSize="120" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,0,0,50"/>
+                            </RelativePanel>
+                            <RelativePanel x:Name="TempPanel" Grid.Column="1" HorizontalAlignment="Stretch">
+                                <TextBox x:Name="TempTitle" Text="체온" BorderThickness="0" FontSize="60" Margin="0,20,0,0" RelativePanel.AlignHorizontalCenterWithPanel="True"/>
+                                <TextBox x:Name="TempData" Text="0" RelativePanel.AlignBottomWithPanel="True" BorderThickness="0" FontSize="120" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,0,0,50"/>
+                            </RelativePanel>
+                            <RelativePanel x:Name="SPO2Panel" Grid.Column="2" HorizontalAlignment="Stretch">
+                                <TextBox x:Name="SPO2Title" Text="산소포화도" BorderThickness="0" FontSize="55"  RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,20,0,0"/>
+                                <TextBox x:Name="SPO2Data" Text="0" RelativePanel.AlignBottomWithPanel="True" BorderThickness="0" FontSize="120" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,0,0,50"/>
+                            </RelativePanel>
+                            <RelativePanel x:Name="LocationPanel" Grid.Column="3" HorizontalAlignment="Stretch">
+                                <TextBox x:Name="LocationTitle" Text="현재 위치" BorderThickness="0" FontSize="60"  RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,20,0,0"/>
+                                <TextBox x:Name="LocationData" Text="null" RelativePanel.AlignBottomWithPanel="True" BorderThickness="0" FontSize="100"  RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,0,0,50"/>
+                            </RelativePanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+
             </SplitView>
         </Grid>
         <StackPanel x:Name="HeaderPanel" Orientation="Horizontal">

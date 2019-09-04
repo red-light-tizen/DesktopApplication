@@ -126,6 +126,7 @@ namespace RedLightDesktopUWP
                 if (message.Length != 0)
                 {
                     dataWriter.WriteString(message);
+                    listBox.Items.Add($"sent : {message}");
                     await dataWriter.StoreAsync();
 
                 }
@@ -147,17 +148,17 @@ namespace RedLightDesktopUWP
                     return;
                 }
 
-                uint stringLength = chatReader.ReadUInt32();
-                uint actualStringLength = await chatReader.LoadAsync(stringLength);
-                if (actualStringLength != stringLength)
-                {
-                    // The underlying socket was closed before we were able to read the whole data
-                    return;
-                }
+                //uint stringLength = chatReader.ReadUInt32();
+                //uint actualStringLength = await chatReader.LoadAsync(stringLength);
+                //if (actualStringLength != stringLength)
+                //{
+                //    // The underlying socket was closed before we were able to read the whole data
+                //    return;
+                //}
 
                 //ConversationList.Items.Add("Received: " + chatReader.ReadString(stringLength));
                 // data process / display here
-                listBox.Items.Add($"Connected : {chatReader.ReadString(stringLength)}");
+                listBox.Items.Add($"Recv : {chatReader.ReadString(60)}");
 
                 ReceiveStringLoop(chatReader);
             }
@@ -203,7 +204,9 @@ namespace RedLightDesktopUWP
                     streamSocket = null;
                 }
             }
+            listBox.Items.Clear();
             listBox.Items.Add("Disconnected");
+
 
         }
 
