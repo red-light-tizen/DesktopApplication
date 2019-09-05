@@ -117,8 +117,6 @@ namespace RedLightDesktopUWP
             {
                 return;
             }
-
-
         }
 
         public async void SendMessage(String message)
