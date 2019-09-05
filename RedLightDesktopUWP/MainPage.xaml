@@ -91,8 +91,8 @@
                     <Border Grid.Row="0" x:Name="ConditionPanel" BorderBrush="AntiqueWhite" BorderThickness="1">
                         <RelativePanel HorizontalAlignment="Center">
                             <TextBlock x:Name="ConditionTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Text="현재상태" FontSize="70" Margin="0,50,0,0"/>
-                            <FontIcon x:Name="ConditionIcon"  FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" RelativePanel.Below="ConditionTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,0" />
-                            <TextBlock x:Name="ConditionData" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="ConditionIcon" Text="No Connection" FontSize="85"  Margin="0,20,0,50"/>
+                            <FontIcon x:Name="ConditionIcon" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" RelativePanel.Below="ConditionTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,0" />
+                            <TextBlock x:Name="ConditionData" Foreground="Gray" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="ConditionIcon" Text="No Connection" FontSize="85"  Margin="0,20,0,50"/>
                         </RelativePanel>
                     </Border>
                     <Border x:Name="SpecStatusPanel" Grid.Row="1" BorderBrush="AntiqueWhite" BorderThickness="1" Margin="0,0,0,0">
@@ -117,7 +117,9 @@
                             </RelativePanel>
                             <RelativePanel x:Name="LocationPanel" Grid.Column="3" HorizontalAlignment="Stretch">
                                 <TextBlock x:Name="LocationTitle" Text="현재 위치" FontSize="60"  RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,20,0,0"/>
-                                <TextBlock x:Name="LocationData" Text="검색 중.." RelativePanel.Below="LocationTitle" FontSize="50"  RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,50"/>
+                                <Viewbox Stretch="Uniform" RelativePanel.Below="LocationTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,50">
+                                    <TextBlock x:Name="LocationData" Text="검색 중.." />
+                                </Viewbox>
                             </RelativePanel>
                         </Grid>
                     </Border>

@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Services.Maps;
 using Windows.UI.Xaml.Controls;
+using Newtonsoft.Json.Linq;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 namespace RedLightDesktopUWP
 {
@@ -35,11 +40,22 @@ namespace RedLightDesktopUWP
         private const string ConditionIconDanger = "\uEA39";
         private const string ConditionIconNoConnection = "\uF384";
 
+        //Remove this on Commit!!!
+        private const string apiToken = "GoogleGeoCodeAPIKey";
+
+        private SolidColorBrush ConditionColorGood;
+        private SolidColorBrush ConditionColorCaution;
+        private SolidColorBrush ConditionColorDanger;
+        private SolidColorBrush ConditionColorNoConnection;
+
         private const int ConvertScaleGeo = 100000;
 
         public DataRegister()
         {
-            
+            ConditionColorGood = new SolidColorBrush(Colors.LightGreen);
+            ConditionColorCaution = new SolidColorBrush(Colors.Yellow);
+            ConditionColorDanger = new SolidColorBrush(Colors.Red);
+            ConditionColorNoConnection = new SolidColorBrush(Colors.Gray);
         }
 
         public DataRegister SetConditionFontIcon(ref FontIcon fontIcon)
@@ -79,7 +95,7 @@ namespace RedLightDesktopUWP
 
         public async void UpdateData(String data)
         {
-            String[] datas = data.Split(";");
+            string[] datas = data.Split(";");
             pulseText.Text = Convert.ToString(Convert.ToInt32(datas[(int)DataSeq.DataSeqPulse]));
             TempText.Text = Convert.ToString(Convert.ToDouble(datas[(int)DataSeq.DataSeqTemp]) /100 );
             SPO2Text.Text = Convert.ToString(Convert.ToDouble(datas[(int)DataSeq.DataSeqSPO2]) /100);
@@ -89,40 +105,70 @@ namespace RedLightDesktopUWP
                 case 0:
                     conditionIcon.Glyph = ConditionIconGood;
                     conditionText.Text = ConditionStringGood;
+
+                    conditionIcon.Foreground = ConditionColorGood;
+                    conditionText.Foreground = ConditionColorGood;
                     break;
                 case 1:
                     conditionIcon.Glyph = ConditionIconCaution;
                     conditionText.Text = ConditionStringCaution;
+
+                    conditionIcon.Foreground = ConditionColorCaution;
+                    conditionText.Foreground = ConditionColorCaution;
                     break;
                 case 2:
                     conditionIcon.Glyph = ConditionIconDanger;
                     conditionText.Text = ConditionStringDanger;
+
+                    conditionIcon.Foreground = ConditionColorDanger;
+                    conditionText.Foreground = ConditionColorDanger;
                     break;
 
                 default:
                     conditionIcon.Glyph = ConditionIconNoConnection;
                     conditionText.Text = ConditionStringNoConnection;
+
+                    conditionIcon.Foreground = ConditionColorNoConnection;
+                    conditionText.Foreground = ConditionColorNoConnection;
                     break;
             }
 
             //Delete when Commit
-            MapService.ServiceToken = "private token";
-
-            Geopoint location = new Geopoint(new BasicGeoposition { Latitude = Convert.ToDouble(datas[(int)DataSeq.DataSeqLatitude])/ ConvertScaleGeo, Longitude = Convert.ToDouble(datas[(int)DataSeq.DataSeqLongitude]) / ConvertScaleGeo });
-            MapLocationFinderResult locationInfo = await MapLocationFinder.FindLocationsAtAsync(location);
-
-            if(locationInfo.Status == MapLocationFinderStatus.Success)
-            {
-                LocationText.Text = $"{locationInfo.Locations[0].Address.Town}";
-            }
-            else
-            {
-                LocationText.Text =$"{locationInfo.Status.ToString()}";
-            }
             
+
+            double lat = Convert.ToDouble(datas[(int)DataSeq.DataSeqLatitude]) / ConvertScaleGeo;
+            double lng = Convert.ToDouble(datas[(int)DataSeq.DataSeqLongitude]) / ConvertScaleGeo;
+
+            string query = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&language=ko&key={apiToken}";
+            string location = "검색 중...";
+
+            await Task.Run(() => {
+                WebRequest request = WebRequest.Create(query);
+
+                WebResponse response = request.GetResponse();
+
+                Stream responseData = response.GetResponseStream();
+
+                StreamReader reader = new StreamReader(responseData);
+
+                // json-formatted string from maps api
+                string responseFromServer = reader.ReadToEnd();
+
+                JObject jObject = JObject.Parse(responseFromServer);
+                location = jObject["results"][1]["address_components"][2]["long_name"].ToString() + "\n" 
+                    + jObject["results"][1]["address_components"][1]["long_name"].ToString() + "\n" 
+                    + jObject["results"][1]["address_components"][0]["long_name"].ToString();
+
+                response.Close();
+            });
+
+            LocationText.Text = location;
 
         }
 
-
+        
     }
+
+    
+
 }

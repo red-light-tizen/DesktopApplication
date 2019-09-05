@@ -55,8 +55,8 @@ namespace RedLightDesktopUWP
                 .SetTempTextBox(ref TempData)
                 .SetLocationTextBox(ref LocationData);
 
-            //            dataRegister.UpdateData("2019;243;59123051;2;098;3750;09820;0230;+3748208;+12688542;");
-            dataRegister.UpdateData("2019;243;59123051;2;098;3750;09820;0230;+4764300;-12213100;");
+            dataRegister.UpdateData("2019;243;59123051;4;098;3750;09820;0230;+3748208;+12688542;");
+            
 
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
             isConnected = false;
