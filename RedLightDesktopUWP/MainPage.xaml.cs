@@ -54,8 +54,8 @@ namespace RedLightDesktopUWP
                 .SetSPO2TextBox(ref SPO2Data)
                 .SetTempTextBox(ref TempData)
                 .SetLocationTextBox(ref LocationData);
-
-            dataRegister.UpdateData("2019;243;59123051;4;098;3750;09820;0230;+3748208;+12688542;");
+            //37.581539, 127.010122
+            dataRegister.UpdateData("2019;243;59123051;4;098;3750;09820;0230;+36.23422;-128.35869;");
             
 
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
@@ -212,6 +212,7 @@ namespace RedLightDesktopUWP
         private void SetDeviceWatcherUI()
         {
             SearchDeviceButton.Content = "Stop Searching";
+            DetectedDevices.Visibility = Visibility.Visible;
             Devices.Visibility = Visibility.Visible;
             Devices.IsEnabled = true;
         }
@@ -221,6 +222,7 @@ namespace RedLightDesktopUWP
             SearchDeviceButton.Content = "Search Device";
             SearchDeviceButton.IsEnabled = true;
             ConnectDeviceButton.Visibility = Visibility.Visible;
+            DetectedDevices.Visibility = Visibility.Collapsed;
             Devices.Visibility = Visibility.Visible;
             Devices.IsEnabled = true;
             StopWatcher();

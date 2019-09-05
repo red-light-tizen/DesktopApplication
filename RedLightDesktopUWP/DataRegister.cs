@@ -41,14 +41,12 @@ namespace RedLightDesktopUWP
         private const string ConditionIconNoConnection = "\uF384";
 
         //Remove this on Commit!!!
-        private const string apiToken = "GoogleGeoCodeAPIKey";
+        private const string apiToken = "GoogleGeocodingAPIKey";
 
         private SolidColorBrush ConditionColorGood;
         private SolidColorBrush ConditionColorCaution;
         private SolidColorBrush ConditionColorDanger;
         private SolidColorBrush ConditionColorNoConnection;
-
-        private const int ConvertScaleGeo = 100000;
 
         public DataRegister()
         {
@@ -136,8 +134,8 @@ namespace RedLightDesktopUWP
             //Delete when Commit
             
 
-            double lat = Convert.ToDouble(datas[(int)DataSeq.DataSeqLatitude]) / ConvertScaleGeo;
-            double lng = Convert.ToDouble(datas[(int)DataSeq.DataSeqLongitude]) / ConvertScaleGeo;
+            double lat = Convert.ToDouble(datas[(int)DataSeq.DataSeqLatitude]);
+            double lng = Convert.ToDouble(datas[(int)DataSeq.DataSeqLongitude]);
 
             string query = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&language=ko&key={apiToken}";
             string location = "검색 중...";
@@ -155,14 +153,22 @@ namespace RedLightDesktopUWP
                 string responseFromServer = reader.ReadToEnd();
 
                 JObject jObject = JObject.Parse(responseFromServer);
-                location = jObject["results"][1]["address_components"][2]["long_name"].ToString() + "\n" 
-                    + jObject["results"][1]["address_components"][1]["long_name"].ToString() + "\n" 
-                    + jObject["results"][1]["address_components"][0]["long_name"].ToString();
+                location = "";
+                for(int i = 3; i>=0; --i)
+                {
+                    try { 
+                        location = location + "\n" +jObject["results"][0]["address_components"][i]["long_name"].ToString();
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                }
 
                 response.Close();
             });
 
-            LocationText.Text = location;
+            LocationText.Text = location.Trim();
 
         }
 

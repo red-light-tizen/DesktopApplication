@@ -28,19 +28,16 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid x:Name="RootGrid" Margin="12,20,12,12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Margin="0,0,0,10">
-
-            </StackPanel>
             <SplitView x:Name="Splitter" IsPaneOpen="True" Grid.Row="1" DisplayMode="Inline">
                 <SplitView.Pane>
-                    <RelativePanel Margin="30,0,0,0">
+                    <RelativePanel Margin="10,0,0,0">
                         <TextBlock x:Name="Header" Text="Connectivity Configure" Margin="10,10,0,0"/>
                         <VariableSizedWrapGrid x:Name="ConnectionButtons" Orientation="Horizontal" ItemWidth="72" RelativePanel.Below="Header">
                             <Button x:Name="SearchDeviceButton"
@@ -72,7 +69,8 @@
                                         Click="TestButton_Click"
                                         />
                         </VariableSizedWrapGrid>
-                        <Border BorderBrush="AntiqueWhite" BorderThickness="1" x:Name="DetectedDevices" RelativePanel.Below="ConnectionButtons" Margin="0,10,0,0" RelativePanel.AlignLeftWithPanel="True">
+                        <Border BorderBrush="AntiqueWhite" BorderThickness="1" x:Name="DetectedDevices" RelativePanel.Below="ConnectionButtons" Margin="0,10,0,0" RelativePanel.AlignLeftWithPanel="True"
+                                Visibility="Collapsed">
                             <ListView x:Name="Devices"
                                           Visibility="Visible"
                                       ItemTemplate="{StaticResource ResultsListViewTemplate}"
@@ -83,7 +81,7 @@
                         </Border>
                     </RelativePanel>
                 </SplitView.Pane>
-                <Grid x:Name="StatusPanel">
+                <Grid x:Name="StatusPanel" Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1.8*"/>
                         <RowDefinition Height="*"/>
@@ -92,7 +90,7 @@
                         <RelativePanel HorizontalAlignment="Center">
                             <TextBlock x:Name="ConditionTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Text="현재상태" FontSize="70" Margin="0,50,0,0"/>
                             <FontIcon x:Name="ConditionIcon" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" RelativePanel.Below="ConditionTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,0" />
-                            <TextBlock x:Name="ConditionData" Foreground="Gray" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="ConditionIcon" Text="No Connection" FontSize="85"  Margin="0,20,0,50"/>
+                            <TextBlock x:Name="ConditionData" Foreground="Gray" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="ConditionIcon" Text="No Connection" FontSize="85"  Margin="0,20,0,40"/>
                         </RelativePanel>
                     </Border>
                     <Border x:Name="SpecStatusPanel" Grid.Row="1" BorderBrush="AntiqueWhite" BorderThickness="1" Margin="0,0,0,0">
@@ -117,8 +115,8 @@
                             </RelativePanel>
                             <RelativePanel x:Name="LocationPanel" Grid.Column="3" HorizontalAlignment="Stretch">
                                 <TextBlock x:Name="LocationTitle" Text="현재 위치" FontSize="60"  RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,20,0,0"/>
-                                <Viewbox Stretch="Uniform" RelativePanel.Below="LocationTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,50">
-                                    <TextBlock x:Name="LocationData" Text="검색 중.." />
+                                <Viewbox Stretch="Uniform" RelativePanel.Below="LocationTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,30,0,50">
+                                    <TextBlock x:Name="LocationData" Text="위치 검색중..." />
                                 </Viewbox>
                             </RelativePanel>
                         </Grid>
@@ -126,16 +124,17 @@
                 </Grid>
 
             </SplitView>
-        </Grid>
-        <StackPanel x:Name="HeaderPanel" Orientation="Horizontal">
-            <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Grid.Row="0">
-                <ToggleButton Click="Configure_Button_Click" VerticalAlignment="Top" Foreground="{ThemeResource ApplicationForegroundThemeBrush}">
-                    <ToggleButton.Content>
-                        <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,10,0,0"/>
-                    </ToggleButton.Content>
-                </ToggleButton>
-            </Border>
+            <StackPanel x:Name="HeaderPanel" Orientation="Horizontal">
+                <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Grid.Row="0">
+                    <ToggleButton Click="Configure_Button_Click" VerticalAlignment="Top" Foreground="{ThemeResource ApplicationForegroundThemeBrush}">
+                        <ToggleButton.Content>
+                            <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,10,0,0"/>
+                        </ToggleButton.Content>
+                    </ToggleButton>
+                </Border>
 
-        </StackPanel>
+            </StackPanel>
+        </Grid>
+        
     </Grid>
 </Page>
