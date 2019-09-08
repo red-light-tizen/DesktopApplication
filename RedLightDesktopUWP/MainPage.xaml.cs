@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
@@ -27,7 +28,7 @@ namespace RedLightDesktopUWP
 
         private Guid guid = Guid.Parse("E9E2ED52-12AA-405A-AB1F-0C70878EFFD9");
         private Guid guid2 = Guid.Parse("9DE5F89C-E9BF-4073-9A27-C5ED076A3A19");
-       
+
 
         private BluetoothCommunicator communicator;
         private DataRegister dataRegister;
@@ -56,11 +57,16 @@ namespace RedLightDesktopUWP
                 .SetLocationTextBox(ref LocationData);
             //37.581539, 127.010122
             dataRegister.UpdateData("2019;243;59123051;4;098;3750;09820;0230;+36.23422;-128.35869;");
-            
+
 
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
             isConnected = false;
+
+
+
         }
+
+
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -169,7 +175,7 @@ namespace RedLightDesktopUWP
 
         private void Devices_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           // UpdatePairingButtons();
+            // UpdatePairingButtons();
         }
 
         private void Configure_Button_Click(object sender, RoutedEventArgs e)
@@ -193,7 +199,7 @@ namespace RedLightDesktopUWP
                 ResetMainUI();
                 ConnectDeviceButton.Content = "Disconnected from Device";
             }
-            
+
         }
 
         private void SearchDeviceButton_Click(object sender, RoutedEventArgs e)
@@ -245,9 +251,8 @@ namespace RedLightDesktopUWP
         {
             communicator.SendMessage("TestMessage from Desktop");
         }
-    
-    }
 
+    }
     public class RfcommDeviceDisplay : INotifyPropertyChanged
     {
         private DeviceInformation deviceInfo;
