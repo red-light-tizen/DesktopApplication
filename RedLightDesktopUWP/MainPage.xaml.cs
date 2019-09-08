@@ -60,6 +60,8 @@ namespace RedLightDesktopUWP
 
 
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
+
+            communicator.AddDebugLog(ref debugLog);
             isConnected = false;
 
 
@@ -194,10 +196,14 @@ namespace RedLightDesktopUWP
             }
             else
             {
-                communicator.Connect((Devices.SelectedItem as RfcommDeviceDisplay).Id);
-                isConnected = true;
-                ResetMainUI();
-                ConnectDeviceButton.Content = "Disconnected from Device";
+                if(Devices.SelectedItem != null)
+                {
+                    communicator.Connect((Devices.SelectedItem as RfcommDeviceDisplay).Id);
+                    isConnected = true;
+                    ResetMainUI();
+                    ConnectDeviceButton.Content = "Disconnected from Device";
+                }
+                
             }
 
         }
