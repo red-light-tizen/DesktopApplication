@@ -87,11 +87,22 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Border Grid.Row="0" x:Name="ConditionPanel" BorderBrush="AntiqueWhite" BorderThickness="1">
-                        <RelativePanel HorizontalAlignment="Center">
-                            <TextBlock x:Name="ConditionTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Text="현재상태" FontSize="70" Margin="0,50,0,0"/>
-                            <FontIcon x:Name="ConditionIcon" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" RelativePanel.Below="ConditionTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,0" />
-                            <TextBlock x:Name="ConditionData" Foreground="Gray" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="ConditionIcon" Text="No Connection" FontSize="85"  Margin="0,20,0,40"/>
-                        </RelativePanel>
+                        <Grid HorizontalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1.2*" />
+                                <RowDefinition Height="3*"/>
+                                <RowDefinition Height="1.6*"/>
+                            </Grid.RowDefinitions>
+                            <Viewbox Stretch="Uniform" Margin="10">
+                                <TextBlock x:Name="ConditionTitle" Text="현재상태" FontSize="70" />
+                            </Viewbox>
+                            <Viewbox Stretch="Uniform" Grid.Row="1" Margin="15">
+                                <FontIcon x:Name="ConditionIcon" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" />
+                            </Viewbox>
+                            <Viewbox Stretch="Uniform" Grid.Row="2" Margin="15">
+                                <TextBlock x:Name="ConditionData" Foreground="Gray" Text="No Connection" FontSize="85" />
+                            </Viewbox>
+                        </Grid>
                     </Border>
                     <Border x:Name="SpecStatusPanel" Grid.Row="1" BorderBrush="AntiqueWhite" BorderThickness="1" Margin="0,0,0,0">
                         <Grid>
@@ -101,24 +112,54 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <RelativePanel x:Name="PulsePanel"  Grid.Column="0" HorizontalAlignment="Stretch">
-                                <TextBlock x:Name="PulseTitle" Text="심박수" FontSize="60" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,20,0,0" />
-                                <TextBlock x:Name="PulseData" Text="0" RelativePanel.AlignBottomWithPanel="True" FontSize="120" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,0,0,50"/>
-                            </RelativePanel>
-                            <RelativePanel x:Name="TempPanel" Grid.Column="1" HorizontalAlignment="Stretch">
-                                <TextBlock x:Name="TempTitle" Text="체온" FontSize="60" Margin="0,20,0,0" RelativePanel.AlignHorizontalCenterWithPanel="True"/>
-                                <TextBlock x:Name="TempData" Text="0" RelativePanel.AlignBottomWithPanel="True" FontSize="120" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,0,0,50"/>
-                            </RelativePanel>
-                            <RelativePanel x:Name="SPO2Panel" Grid.Column="2" HorizontalAlignment="Stretch">
-                                <TextBlock x:Name="SPO2Title" Text="산소포화도" FontSize="55"  RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,20,0,0"/>
-                                <TextBlock x:Name="SPO2Data" Text="0" RelativePanel.AlignBottomWithPanel="True" FontSize="120" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,0,0,50"/>
-                            </RelativePanel>
-                            <RelativePanel x:Name="LocationPanel" Grid.Column="3" HorizontalAlignment="Stretch">
-                                <TextBlock x:Name="LocationTitle" Text="현재 위치" FontSize="60"  RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,20,0,0"/>
-                                <Viewbox Stretch="Uniform" RelativePanel.Below="LocationTitle" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,30,0,50">
+                            <Grid x:Name="PulsePanel"  Grid.Column="0" HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1.2*"/>
+                                    <RowDefinition Height="2*"/>
+                                </Grid.RowDefinitions>
+                                <Viewbox Stretch="Uniform">
+                                    <TextBlock x:Name="PulseTitle" Text="심박수" FontSize="60" Margin="10"/>
+                                </Viewbox>
+                                <Viewbox Grid.Row="1" Stretch="Uniform">
+                                    <TextBlock x:Name="PulseData" Text="0" FontSize="120" Margin="10"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="TempPanel" Grid.Column="1" HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1.2*"/>
+                                    <RowDefinition Height="2*"/>
+                                </Grid.RowDefinitions>
+                                <Viewbox Grid.Row="0" Stretch="Uniform" Margin="10" >
+                                    <TextBlock x:Name="TempTitle" Text="체온" />
+                                </Viewbox>
+                                <Viewbox Grid.Row="1" Stretch="Uniform" Margin="10">
+                                    <TextBlock x:Name="TempData" Text="0" FontSize="120"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="SPO2Panel" Grid.Column="2" HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1.2*"/>
+                                    <RowDefinition Height="2*"/>
+                                </Grid.RowDefinitions>
+                                <Viewbox Stretch="Uniform" Margin="10">
+                                    <TextBlock x:Name="SPO2Title" Text="산소포화도"  />
+                                </Viewbox>
+                                <Viewbox Grid.Row="1" Stretch="Uniform" Margin="10" >
+                                    <TextBlock x:Name="SPO2Data" Text="0"  FontSize="120"  />
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="LocationPanel" Grid.Column="3" HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1.2*"/>
+                                    <RowDefinition Height="2*"/>
+                                </Grid.RowDefinitions>
+                                <Viewbox Stretch="Uniform" Margin="10">
+                                    <TextBlock x:Name="LocationTitle" Text="현재 위치" />
+                                </Viewbox>
+                                <Viewbox Grid.Row="1" Stretch="Uniform" Margin="10">
                                     <TextBlock x:Name="LocationData" Text="위치 검색중..." />
                                 </Viewbox>
-                            </RelativePanel>
+                            </Grid>
                         </Grid>
                     </Border>
                 </Grid>
