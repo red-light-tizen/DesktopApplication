@@ -40,8 +40,11 @@ namespace RedLightDesktopUWP
         private const string ConditionIconDanger = "\uEA39";
         private const string ConditionIconNoConnection = "\uF384";
 
+        private const int geolocationUpdateFreq = 50;
+        private static int geolocationUpdateCount = 0;
+
         //Remove this on Commit!!!
-        private const string apiToken = "GoogleGeocodingAPIKey";
+        private const string apiToken = "GoogleGeoAPI";
 
         private SolidColorBrush ConditionColorGood;
         private SolidColorBrush ConditionColorCaution;
@@ -132,44 +135,51 @@ namespace RedLightDesktopUWP
             }
 
             //Delete when Commit
-            
 
-            double lat = Convert.ToDouble(datas[(int)DataSeq.DataSeqLatitude]);
-            double lng = Convert.ToDouble(datas[(int)DataSeq.DataSeqLongitude]);
+            geolocationUpdateCount -= 1;
 
-            string query = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&language=ko&key={apiToken}";
-            string location = "검색 중...";
+            if (geolocationUpdateCount < 0)
+            {
+                geolocationUpdateCount = geolocationUpdateFreq;
+                double lat = Convert.ToDouble(datas[(int)DataSeq.DataSeqLatitude]);
+                double lng = Convert.ToDouble(datas[(int)DataSeq.DataSeqLongitude]);
 
-            await Task.Run(() => {
-                WebRequest request = WebRequest.Create(query);
+                string query = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&language=ko&key={apiToken}";
+                string location = "검색 중...";
 
-                WebResponse response = request.GetResponse();
-
-                Stream responseData = response.GetResponseStream();
-
-                StreamReader reader = new StreamReader(responseData);
-
-                // json-formatted string from maps api
-                string responseFromServer = reader.ReadToEnd();
-
-                JObject jObject = JObject.Parse(responseFromServer);
-                location = "";
-                for(int i = 3; i>=0; --i)
+                await Task.Run(() =>
                 {
-                    try { 
-                        location = location + "\n" +jObject["results"][0]["address_components"][i]["long_name"].ToString();
-                    }
-                    catch (Exception)
+                    WebRequest request = WebRequest.Create(query);
+
+                    WebResponse response = request.GetResponse();
+
+                    Stream responseData = response.GetResponseStream();
+
+                    StreamReader reader = new StreamReader(responseData);
+
+                    // json-formatted string from maps api
+                    string responseFromServer = reader.ReadToEnd();
+
+                    JObject jObject = JObject.Parse(responseFromServer);
+                    location = "";
+                    for (int i = 3; i >= 0; --i)
                     {
-                        continue;
+                        try
+                        {
+                            location = location + "\n" + jObject["results"][0]["address_components"][i]["long_name"].ToString();
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
                     }
-                }
 
-                response.Close();
-            });
+                    response.Close();
+                });
 
-            LocationText.Text = location.Trim();
+                LocationText.Text = location.Trim();
 
+            }
         }
 
         

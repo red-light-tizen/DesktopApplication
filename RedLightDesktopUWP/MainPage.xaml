@@ -65,8 +65,8 @@
                                         Content="Send TestData"
                                         Margin="0,10,0,0"
                                         VariableSizedWrapGrid.ColumnSpan="5"
-                                        
                                         Click="TestButton_Click"
+                                        Visibility="Collapsed"
                                         />
                         </VariableSizedWrapGrid>
                         <Border BorderBrush="AntiqueWhite" BorderThickness="1" x:Name="DetectedDevices" RelativePanel.Below="ConnectionButtons" Margin="0,10,0,0" RelativePanel.AlignLeftWithPanel="True"
@@ -87,21 +87,36 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Border Grid.Row="0" x:Name="ConditionPanel" BorderBrush="AntiqueWhite" BorderThickness="1">
-                        <Grid HorizontalAlignment="Center">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1.2*" />
-                                <RowDefinition Height="3*"/>
-                                <RowDefinition Height="1.6*"/>
-                            </Grid.RowDefinitions>
-                            <Viewbox Stretch="Uniform" Margin="10">
-                                <TextBlock x:Name="ConditionTitle" Text="현재상태" FontSize="70" />
-                            </Viewbox>
-                            <Viewbox Stretch="Uniform" Grid.Row="1" Margin="15">
-                                <FontIcon x:Name="ConditionIcon" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" />
-                            </Viewbox>
-                            <Viewbox Stretch="Uniform" Grid.Row="2" Margin="15">
-                                <TextBlock x:Name="ConditionData" Foreground="Gray" Text="No Connection" FontSize="85" />
-                            </Viewbox>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition Width="5*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid HorizontalAlignment="Center" Grid.ColumnSpan="3">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1.2*" />
+                                    <RowDefinition Height="3*"/>
+                                    <RowDefinition Height="1.6*"/>
+                                </Grid.RowDefinitions>
+                                <Viewbox Stretch="Uniform" Margin="10">
+                                    <TextBlock x:Name="ConditionTitle" Text="현재상태" FontSize="70" />
+                                </Viewbox>
+                                <Viewbox Stretch="Uniform" Grid.Row="1" Margin="15">
+                                    <FontIcon x:Name="ConditionIcon" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" />
+                                </Viewbox>
+                                <Viewbox Stretch="Uniform" Grid.Row="2" Margin="15">
+                                    <TextBlock x:Name="ConditionData" Foreground="Gray" Text="No Connection" FontSize="85" />
+                                </Viewbox>
+                            </Grid>
+                            
+                                <Border Grid.Column="2" BorderBrush="AntiqueWhite" BorderThickness="1" Visibility="Collapsed">
+                                    <ListBox x:Name="debugLog" >
+                                        
+                                    </ListBox>
+                                </Border>
+                            
+                            
                         </Grid>
                     </Border>
                     <Border x:Name="SpecStatusPanel" Grid.Row="1" BorderBrush="AntiqueWhite" BorderThickness="1" Margin="0,0,0,0">

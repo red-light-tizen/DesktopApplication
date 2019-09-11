@@ -23,6 +23,10 @@ namespace RedLightDesktopUWP
         private RfcommDeviceService RfService = null;
         private BluetoothDevice bluetoothDevice;
         private DataRegister dataRegister;
+        private const int DataLen = 62;
+
+        private ListBox debugLog;
+        private bool debugable;
 
         public BluetoothCommunicator(Guid guid, ref DataRegister dataRegister)
         {
@@ -31,10 +35,26 @@ namespace RedLightDesktopUWP
             this.dataRegister = dataRegister;
         }
 
+        public void AddDebugLog(ref ListBox listBox)
+        {
+            this.debugLog = listBox;
+            debugable = true;
+        }
+
+        private void WriteDebug(String data)
+        {
+            if (debugable)
+            {
+                debugLog.Items.Add(data);
+            }
+        }
+
         public async void Connect(String devID)
         {
             // Perform device access checks before trying to get the device.
             // First, we check if consent has been explicitly denied by the user.
+            WriteDebug("Check Connection");
+
             DeviceAccessStatus accessStatus = DeviceAccessInformation.CreateFromId(devID).CurrentStatus;
             if (accessStatus == DeviceAccessStatus.DeniedByUser)
             {
@@ -56,6 +76,7 @@ namespace RedLightDesktopUWP
             {
                 return;
             }
+            WriteDebug("Sync Devices..");
 
             // This should return a list of uncached Bluetooth services (so if the server was not active when paired, it will still be detected by this call
             var rfcommServices = await bluetoothDevice.GetRfcommServicesForIdAsync(
@@ -100,6 +121,7 @@ namespace RedLightDesktopUWP
             {
                 await streamSocket.ConnectAsync(RfService.ConnectionHostName, RfService.ConnectionServiceName);
 
+                WriteDebug($"{RfService.ConnectionHostName} : {RfService.Device.ConnectionStatus}");
                 //SetChatUI(attributeReader.ReadString(serviceNameLength), bluetoothDevice.Name);
 
                 dataRegister.conditionText.Text = "Checking Connection...";
@@ -107,7 +129,10 @@ namespace RedLightDesktopUWP
                 dataWriter = new DataWriter(streamSocket.OutputStream);
 
                 DataReader chatReader = new DataReader(streamSocket.InputStream);
-                //ReceiveStringLoop(chatReader);
+
+                
+
+                ReceiveStringLoop(chatReader);
             }
             catch (Exception ex) when ((uint)ex.HResult == 0x80070490) // ERROR_ELEMENT_NOT_FOUND
             {
@@ -117,6 +142,10 @@ namespace RedLightDesktopUWP
             {
                 return;
             }
+            catch
+            {
+
+            }
         }
 
         public async void SendMessage(String message)
@@ -125,8 +154,11 @@ namespace RedLightDesktopUWP
             {
                 if (message.Length != 0)
                 {
+                    dataWriter.WriteString(Convert.ToString(message.Length));
                     dataWriter.WriteString(message);
                     await dataWriter.StoreAsync();
+                    WriteDebug($"Message Send Success. Message :  {message}");
+                    
 
                 }
             }
@@ -141,23 +173,12 @@ namespace RedLightDesktopUWP
         {
             try
             {
-                uint size = await chatReader.LoadAsync(sizeof(uint));
-                if (size < sizeof(uint))
-                {
-                    Disconnect();
-                    return;
-                }
+                uint actualStringLength = await chatReader.LoadAsync(DataLen);
 
-                uint stringLength = chatReader.ReadUInt32();
-                uint actualStringLength = await chatReader.LoadAsync(stringLength);
-                if (actualStringLength != stringLength)
-                {
-                    // The underlying socket was closed before we were able to read the whole data
-                    return;
-                }
+                string message = chatReader.ReadString(actualStringLength);
 
-                dataRegister.UpdateData(chatReader.ReadString(stringLength));
-
+                dataRegister.UpdateData(message);
+                WriteDebug($"Message Recieve Success. Message :  {message}");
                 ReceiveStringLoop(chatReader);
             }
             catch (Exception ex)
@@ -172,6 +193,7 @@ namespace RedLightDesktopUWP
                     }
                     else
                     {
+                        WriteDebug(ex.StackTrace);
                         Disconnect();
                     }
                 }
@@ -201,6 +223,10 @@ namespace RedLightDesktopUWP
                 }
             }
 
+            dataRegister.UpdateData("0000;000;00000000;4;000;0000;00000;0000;+0;-0;");
+
+
+            WriteDebug("Disconnected.");
         }
 
     }
