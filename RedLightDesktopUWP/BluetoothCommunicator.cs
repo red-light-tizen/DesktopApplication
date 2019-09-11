@@ -131,7 +131,7 @@ namespace RedLightDesktopUWP
 
                 
 
-                //ReceiveStringLoop(chatReader);
+                ReceiveStringLoop(chatReader);
             }
             catch (Exception ex) when ((uint)ex.HResult == 0x80070490) // ERROR_ELEMENT_NOT_FOUND
             {
@@ -140,6 +140,10 @@ namespace RedLightDesktopUWP
             catch (Exception ex) when ((uint)ex.HResult == 0x80072740) // WSAEADDRINUSE
             {
                 return;
+            }
+            catch
+            {
+
             }
         }
 
@@ -153,7 +157,7 @@ namespace RedLightDesktopUWP
                     dataWriter.WriteString(message);
                     await dataWriter.StoreAsync();
                     WriteDebug($"Message Send Success. Message :  {message}");
-
+                    
 
                 }
             }
@@ -180,6 +184,7 @@ namespace RedLightDesktopUWP
                 if (actualStringLength != stringLength)
                 {
                     // The underlying socket was closed before we were able to read the whole data
+                    WriteDebug("Diff length of Recive Data ");
                     return;
                 }
                 string message = chatReader.ReadString(stringLength);
@@ -200,6 +205,7 @@ namespace RedLightDesktopUWP
                     }
                     else
                     {
+                        WriteDebug($"{ex.HResult}");
                         Disconnect();
                     }
                 }
