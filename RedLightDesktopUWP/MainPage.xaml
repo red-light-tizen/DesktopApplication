@@ -65,8 +65,8 @@
                                         Content="Send TestData"
                                         Margin="0,10,0,0"
                                         VariableSizedWrapGrid.ColumnSpan="5"
-                                        
                                         Click="TestButton_Click"
+                                        Visibility="Collapsed"
                                         />
                         </VariableSizedWrapGrid>
                         <Border BorderBrush="AntiqueWhite" BorderThickness="1" x:Name="DetectedDevices" RelativePanel.Below="ConnectionButtons" Margin="0,10,0,0" RelativePanel.AlignLeftWithPanel="True"
@@ -91,7 +91,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="10*"/>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="5*"/>
                             </Grid.ColumnDefinitions>
                             <Grid HorizontalAlignment="Center" Grid.ColumnSpan="3">
                                 <Grid.RowDefinitions>
@@ -110,7 +110,7 @@
                                 </Viewbox>
                             </Grid>
                             
-                                <Border Grid.Column="2" BorderBrush="AntiqueWhite" BorderThickness="1">
+                                <Border Grid.Column="2" BorderBrush="AntiqueWhite" BorderThickness="1" Visibility="Collapsed">
                                     <ListBox x:Name="debugLog" >
                                         
                                     </ListBox>

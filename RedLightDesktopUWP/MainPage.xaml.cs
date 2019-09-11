@@ -55,13 +55,10 @@ namespace RedLightDesktopUWP
                 .SetSPO2TextBox(ref SPO2Data)
                 .SetTempTextBox(ref TempData)
                 .SetLocationTextBox(ref LocationData);
-            //37.581539, 127.010122
-            dataRegister.UpdateData("2019;243;59123051;4;098;3750;09820;0230;+36.23422;-128.35869;");
-
 
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
 
-            communicator.AddDebugLog(ref debugLog);
+            //communicator.AddDebugLog(ref debugLog);
             isConnected = false;
 
 
