@@ -23,7 +23,6 @@ namespace RedLightDesktopUWP
         private RfcommDeviceService RfService = null;
         private BluetoothDevice bluetoothDevice;
         private DataRegister dataRegister;
-        private const int DataLen = 62;
 
         private ListBox debugLog;
         private bool debugable;
@@ -173,10 +172,17 @@ namespace RedLightDesktopUWP
         {
             try
             {
-                uint actualStringLength = await chatReader.LoadAsync(DataLen);
-
-                string message = chatReader.ReadString(actualStringLength);
-
+                string message = "";
+                while (true)
+                {
+                    await chatReader.LoadAsync(1);
+                    string charcter = chatReader.ReadString(1);
+                    if (charcter.Equals("\0")){
+                        break;
+                    }
+                    message = string.Concat(message,charcter);
+                }
+                
                 dataRegister.UpdateData(message);
                 WriteDebug($"Message Recieve Success. Message :  {message}");
                 ReceiveStringLoop(chatReader);
@@ -223,7 +229,7 @@ namespace RedLightDesktopUWP
                 }
             }
 
-            dataRegister.UpdateData("0000;000;00000000;4;000;0000;00000;0000;+0;-0;");
+            dataRegister.UpdateData("0000;000;00000000;4;000;0000;00000;0000;+00.00000;-000.00000;");
 
 
             WriteDebug("Disconnected.");
