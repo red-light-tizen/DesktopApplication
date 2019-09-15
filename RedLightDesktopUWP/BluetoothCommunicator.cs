@@ -1,8 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+ *  BluetoothComunicator.cs  
+ *  
+ *  Created on :Sep 15, 2019
+ *  Author : Kasania
+ */
+
+using System;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Rfcomm;
 using Windows.Devices.Enumeration;
@@ -121,7 +124,7 @@ namespace RedLightDesktopUWP
                 await streamSocket.ConnectAsync(RfService.ConnectionHostName, RfService.ConnectionServiceName);
 
                 WriteDebug($"{RfService.ConnectionHostName} : {RfService.Device.ConnectionStatus}");
-                //SetChatUI(attributeReader.ReadString(serviceNameLength), bluetoothDevice.Name);
+                
 
                 dataRegister.conditionText.Text = "Checking Connection...";
                 

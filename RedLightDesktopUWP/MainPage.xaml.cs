@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+ *  MainPage.xaml.cs  
+ *  
+ *  Created on :Sep 02, 2019
+ *  Author : Kasania
+ */
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 

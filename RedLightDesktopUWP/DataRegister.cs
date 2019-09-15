@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+ *  DataRegister.cs  
+ *  
+ *  Created on :Sep 15, 2019
+ *  Author : Kasania
+ */
+using System;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Devices.Geolocation;
-using Windows.Services.Maps;
 using Windows.UI.Xaml.Controls;
 using Newtonsoft.Json.Linq;
 using Windows.UI.Xaml.Media;
