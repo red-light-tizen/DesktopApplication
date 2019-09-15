@@ -28,13 +28,12 @@ namespace RedLightDesktopUWP
     {
 
         private Guid guid = Guid.Parse("E9E2ED52-12AA-405A-AB1F-0C70878EFFD9");
-        private Guid guid2 = Guid.Parse("9DE5F89C-E9BF-4073-9A27-C5ED076A3A19");
-
-
         private BluetoothCommunicator communicator;
         private DataRegister dataRegister;
         private bool isConnected;
 
+        private int debugCounter;
+        private const int debugCounterLimit = 11;
 
         public ObservableCollection<RfcommDeviceDisplay> ResultCollection
         {
@@ -59,14 +58,10 @@ namespace RedLightDesktopUWP
 
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
 
-            //communicator.AddDebugLog(ref debugLog);
+            communicator.AddDebugLog(ref debugLog);
             isConnected = false;
 
-
-
         }
-
-
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -181,11 +176,13 @@ namespace RedLightDesktopUWP
         private void Configure_Button_Click(object sender, RoutedEventArgs e)
         {
             Splitter.IsPaneOpen = !Splitter.IsPaneOpen;
+
+            ++debugCounter;
         }
 
         private void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
-
+            
             if (isConnected)
             {
                 communicator.Disconnect();
@@ -194,7 +191,17 @@ namespace RedLightDesktopUWP
             }
             else
             {
-                if(Devices.SelectedItem != null)
+                if (debugCounter > debugCounterLimit)
+                {
+                    debugLogBorder.Visibility = Visibility.Visible;
+                    debugLog.Items.Add("DebugLogger Activate");
+                }
+                else
+                {
+                    debugLogBorder.Visibility = Visibility.Collapsed;
+                }
+
+                if (Devices.SelectedItem != null)
                 {
                     communicator.Connect((Devices.SelectedItem as RfcommDeviceDisplay).Id);
                     isConnected = true;
@@ -203,11 +210,12 @@ namespace RedLightDesktopUWP
                 }
                 
             }
-
+            debugCounter = 0;
         }
 
         private void SearchDeviceButton_Click(object sender, RoutedEventArgs e)
         {
+            debugCounter = 0;
             if (deviceWatcher == null)
             {
                 SetDeviceWatcherUI();
