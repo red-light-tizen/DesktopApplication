@@ -27,6 +27,7 @@ namespace RedLightDesktopUWP
         private BluetoothDevice bluetoothDevice;
         private DataRegister dataRegister;
 
+        private Func<object> onDisconnect;
         private ListBox debugLog;
         private bool debugable;
 
@@ -112,6 +113,7 @@ namespace RedLightDesktopUWP
             // The Service Name attribute requires UTF-8 encoding.
             attributeReader.UnicodeEncoding = UnicodeEncoding.Utf8;
             
+            
 
 
             //------------bind Stream------
@@ -148,6 +150,11 @@ namespace RedLightDesktopUWP
             {
 
             }
+        }
+
+        public void SetOnDisconnect(Func<object> p)
+        {
+            onDisconnect = p;
         }
 
         public async void SendMessage(String message)
@@ -236,6 +243,9 @@ namespace RedLightDesktopUWP
 
 
             WriteDebug("Disconnected.");
+
+            onDisconnect();
+
         }
 
     }
