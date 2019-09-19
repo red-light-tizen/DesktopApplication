@@ -30,6 +30,8 @@ namespace RedLightDesktopUWP
         private Func<object> onDisconnect;
         private ListBox debugLog;
         private bool debugable;
+        private bool isConnected;
+        private bool isCanceled;
 
         public BluetoothCommunicator(Guid guid, ref DataRegister dataRegister)
         {
@@ -56,6 +58,8 @@ namespace RedLightDesktopUWP
         {
             // Perform device access checks before trying to get the device.
             // First, we check if consent has been explicitly denied by the user.
+            isCanceled = false;
+            isConnected = false;
             WriteDebug("Check Connection");
 
             DeviceAccessStatus accessStatus = DeviceAccessInformation.CreateFromId(devID).CurrentStatus;
@@ -124,6 +128,7 @@ namespace RedLightDesktopUWP
             try
             {
                 await streamSocket.ConnectAsync(RfService.ConnectionHostName, RfService.ConnectionServiceName);
+                
 
                 WriteDebug($"{RfService.ConnectionHostName} : {RfService.Device.ConnectionStatus}");
                 
@@ -135,6 +140,8 @@ namespace RedLightDesktopUWP
                 DataReader chatReader = new DataReader(streamSocket.InputStream);
 
                 
+
+                isConnected = true;
 
                 ReceiveStringLoop(chatReader);
             }
@@ -180,6 +187,13 @@ namespace RedLightDesktopUWP
 
         public async void ReceiveStringLoop(DataReader chatReader)
         {
+            if (isCanceled)
+            {
+                WriteDebug($"Cancel Connection.");
+                Disconnect();
+                return;
+            }
+
             try
             {
                 string message = "";
@@ -218,6 +232,11 @@ namespace RedLightDesktopUWP
 
         public void Disconnect()
         {
+            if (!isConnected)
+            {
+                isCanceled = true;
+                return;
+            }
             if (dataWriter != null)
             {
                 dataWriter.DetachStream();
