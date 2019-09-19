@@ -81,6 +81,8 @@
                         </Border>
                     </RelativePanel>
                 </SplitView.Pane>
+                
+                
                 <Grid x:Name="StatusPanel" Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1.8*"/>
@@ -178,8 +180,11 @@
                         </Grid>
                     </Border>
                 </Grid>
+                
+
 
             </SplitView>
+
             <StackPanel x:Name="HeaderPanel" Orientation="Horizontal">
                 <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Grid.Row="0">
                     <ToggleButton Click="Configure_Button_Click" VerticalAlignment="Top" Foreground="{ThemeResource ApplicationForegroundThemeBrush}">

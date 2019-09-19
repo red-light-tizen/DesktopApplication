@@ -59,6 +59,13 @@ namespace RedLightDesktopUWP
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
 
             communicator.AddDebugLog(ref debugLog);
+            communicator.SetOnDisconnect(
+                () => {
+                    isConnected = false;
+                    ConnectDeviceButton.Content = "Connect to Selected Device";
+                    return true;
+                 }
+            );
             isConnected = false;
 
         }
@@ -198,7 +205,7 @@ namespace RedLightDesktopUWP
                 }
                 else
                 {
-                    debugLogBorder.Visibility = Visibility.Collapsed;
+                    //debugLogBorder.Visibility = Visibility.Collapsed;
                 }
 
                 if (Devices.SelectedItem != null)

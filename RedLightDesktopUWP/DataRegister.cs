@@ -147,7 +147,10 @@ namespace RedLightDesktopUWP
 
                 string query = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&language=ko&key={apiToken}";
                 string location = "검색 중...";
+                try
+                {
 
+                
                 await Task.Run(() =>
                 {
                     WebRequest request = WebRequest.Create(query);
@@ -171,6 +174,7 @@ namespace RedLightDesktopUWP
                         }
                         catch (Exception)
                         {
+                            LocationText.Text = "APIRequest\nError";
                             continue;
                         }
                     }
@@ -179,7 +183,11 @@ namespace RedLightDesktopUWP
                 });
 
                 LocationText.Text = location.Trim();
-
+                }
+                catch (Exception)
+                {
+                    LocationText.Text = "Check\nInternet\nconnection.";
+                }
             }
         }
 
