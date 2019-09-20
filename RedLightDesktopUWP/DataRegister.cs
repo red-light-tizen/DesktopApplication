@@ -41,16 +41,21 @@ namespace RedLightDesktopUWP
         private const string ConditionIconDanger = "\uEA39";
         private const string ConditionIconNoConnection = "\uF384";
 
-        private const int geolocationUpdateFreq = 50;
+        private const int geolocationUpdateFreq = 600;
         private static int geolocationUpdateCount = 0;
 
         //Remove this on Commit!!!
         private const string apiToken = "GoogleGeoAPI";
+        string[] datas;
 
         private SolidColorBrush ConditionColorGood;
         private SolidColorBrush ConditionColorCaution;
         private SolidColorBrush ConditionColorDanger;
         private SolidColorBrush ConditionColorNoConnection;
+
+        private int lastPulse;
+        private double lastTemp;
+        private double lastSPO2;
 
         public DataRegister()
         {
@@ -97,10 +102,30 @@ namespace RedLightDesktopUWP
 
         public async void UpdateData(String data)
         {
-            string[] datas = data.Split(";");
-            pulseText.Text = Convert.ToString(Convert.ToInt32(datas[(int)DataSeq.DataSeqPulse]));
-            TempText.Text = Convert.ToString(Convert.ToDouble(datas[(int)DataSeq.DataSeqTemp]) /100 );
-            SPO2Text.Text = Convert.ToString(Convert.ToDouble(datas[(int)DataSeq.DataSeqSPO2]) /100);
+
+            try
+            {
+
+            
+            datas = data.Split(";");
+
+
+            lastPulse = Convert.ToInt32(datas[(int)DataSeq.DataSeqPulse]);
+            lastTemp = Convert.ToDouble(datas[(int)DataSeq.DataSeqTemp]) / 100.0;
+            lastSPO2 = Convert.ToDouble(datas[(int)DataSeq.DataSeqSPO2]) / 100.0;
+
+            }
+            catch (Exception)
+            {
+                //when invalid data.
+                return;
+            }
+
+            pulseText.Text = Convert.ToString(lastPulse);
+            TempText.Text = Convert.ToString(lastTemp);
+            SPO2Text.Text = Convert.ToString(lastSPO2);
+
+
 
             switch (Convert.ToInt32(datas[(int)DataSeq.DataSeqCondition]))
             {
@@ -110,6 +135,7 @@ namespace RedLightDesktopUWP
 
                     conditionIcon.Foreground = ConditionColorGood;
                     conditionText.Foreground = ConditionColorGood;
+                    geolocationUpdateCount -= 1;
                     break;
                 case 1:
                     conditionIcon.Glyph = ConditionIconCaution;
@@ -117,6 +143,7 @@ namespace RedLightDesktopUWP
 
                     conditionIcon.Foreground = ConditionColorCaution;
                     conditionText.Foreground = ConditionColorCaution;
+                    geolocationUpdateCount = 0;
                     break;
                 case 2:
                     conditionIcon.Glyph = ConditionIconDanger;
@@ -124,6 +151,7 @@ namespace RedLightDesktopUWP
 
                     conditionIcon.Foreground = ConditionColorDanger;
                     conditionText.Foreground = ConditionColorDanger;
+                    geolocationUpdateCount = 0;
                     break;
 
                 default:
@@ -134,10 +162,6 @@ namespace RedLightDesktopUWP
                     conditionText.Foreground = ConditionColorNoConnection;
                     break;
             }
-
-            //Delete when Commit
-
-            geolocationUpdateCount -= 1;
 
             if (geolocationUpdateCount < 0)
             {

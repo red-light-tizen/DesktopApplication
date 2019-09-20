@@ -187,28 +187,41 @@ namespace RedLightDesktopUWP
 
         public async void ReceiveStringLoop(DataReader chatReader)
         {
+
             if (isCanceled)
             {
                 WriteDebug($"Cancel Connection.");
                 Disconnect();
                 return;
             }
-
+            string message = "";
             try
             {
-                string message = "";
+                try
+                {
+
+                
                 while (true)
                 {
-                    await chatReader.LoadAsync(1);
-                    string charcter = chatReader.ReadString(1);
-                    if (charcter.Equals("\0")){
+                    await chatReader.LoadAsync(sizeof(byte));
+                    byte character = chatReader.ReadByte();
+                    if (character == 0){
                         break;
                     }
-                    message = string.Concat(message,charcter);
+                    message = string.Concat(message,(char)character);
+                    if (message.Equals(""))
+                    {
+                        break;
+                    }
                 }
-                
+                }
+                catch (Exception ex2) when ((uint)ex2.HResult == 0x8000000b)
+                {
+                    //Not sure.
+                    //For catch OutOfBound error from dataReader.
+                }
                 dataRegister.UpdateData(message);
-                WriteDebug($"Message Recieve Success. Message :  {message}");
+                WriteDebug($"Message :  {message}");
                 ReceiveStringLoop(chatReader);
             }
             catch (Exception ex)

@@ -58,7 +58,7 @@ namespace RedLightDesktopUWP
 
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
 
-            communicator.AddDebugLog(ref debugLog);
+            
             communicator.SetOnDisconnect(
                 () => {
                     isConnected = false;
@@ -200,7 +200,9 @@ namespace RedLightDesktopUWP
             {
                 if (debugCounter > debugCounterLimit)
                 {
+                    communicator.AddDebugLog(ref debugLog);
                     debugLogBorder.Visibility = Visibility.Visible;
+                    
                     debugLog.Items.Add("DebugLogger Activate");
                 }
                 else
