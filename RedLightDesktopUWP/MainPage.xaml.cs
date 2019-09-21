@@ -66,6 +66,15 @@ namespace RedLightDesktopUWP
                     return true;
                  }
             );
+
+            communicator.SetOnReconnect(
+                () => {
+                    isConnected = true;
+                    ResetMainUI();
+                    ConnectDeviceButton.Content = "Disconnected from Device";
+                    return true;
+                }
+            );
             isConnected = false;
 
         }
@@ -192,7 +201,11 @@ namespace RedLightDesktopUWP
             
             if (isConnected)
             {
-                communicator.Disconnect();
+                lock (communicator)
+                {
+                    communicator.Disconnect();
+                }
+                
                 isConnected = false;
                 ConnectDeviceButton.Content = "Connect to Selected Device";
             }

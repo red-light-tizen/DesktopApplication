@@ -163,6 +163,8 @@ namespace RedLightDesktopUWP
                     break;
             }
 
+            return;
+
             if (geolocationUpdateCount < 0)
             {
                 geolocationUpdateCount = geolocationUpdateFreq;

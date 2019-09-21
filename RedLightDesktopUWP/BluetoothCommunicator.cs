@@ -28,10 +28,13 @@ namespace RedLightDesktopUWP
         private DataRegister dataRegister;
 
         private Func<object> onDisconnect;
+        private Func<object> onReconnect;
         private ListBox debugLog;
         private bool debugable;
         private bool isConnected;
         private bool isCanceled;
+
+        private string lastDevID;
 
         public BluetoothCommunicator(Guid guid, ref DataRegister dataRegister)
         {
@@ -58,6 +61,7 @@ namespace RedLightDesktopUWP
         {
             // Perform device access checks before trying to get the device.
             // First, we check if consent has been explicitly denied by the user.
+            lastDevID = devID;
             isCanceled = false;
             isConnected = false;
             WriteDebug("Check Connection");
@@ -86,15 +90,40 @@ namespace RedLightDesktopUWP
             WriteDebug("Sync Devices..");
 
             // This should return a list of uncached Bluetooth services (so if the server was not active when paired, it will still be detected by this call
-            var rfcommServices = await bluetoothDevice.GetRfcommServicesForIdAsync(
+            long start = DateTime.Now.Ticks;
+
+            RfcommDeviceServicesResult rfcommServices = null;
+            while(true)
+            {
+                
+
+                rfcommServices = await bluetoothDevice.GetRfcommServicesForIdAsync(
                 RfcommServiceId.FromUuid(guid), BluetoothCacheMode.Uncached);
 
-            if (rfcommServices.Services.Count > 0)
-            {
-                RfService = rfcommServices.Services[0];
+                if (rfcommServices.Services.Count > 0)
+                {
+                    WriteDebug($"{rfcommServices.Error}.");
+                    RfService = rfcommServices.Services[0];
+                    break;
+
+                }
+                lock (this)
+                {
+                    long current = DateTime.Now.Ticks;
+                    if (current - 10_00000000 > start)
+                    {
+                        break;
+                    }
+                }
+                
+
             }
-            else
+
+            if(RfService == null)
             {
+                isCanceled = true;
+                Disconnect();
+                onDisconnect();
                 return;
             }
 
@@ -128,18 +157,14 @@ namespace RedLightDesktopUWP
             try
             {
                 await streamSocket.ConnectAsync(RfService.ConnectionHostName, RfService.ConnectionServiceName);
-                
 
                 WriteDebug($"{RfService.ConnectionHostName} : {RfService.Device.ConnectionStatus}");
                 
-
                 dataRegister.conditionText.Text = "Checking Connection...";
                 
                 dataWriter = new DataWriter(streamSocket.OutputStream);
 
                 DataReader chatReader = new DataReader(streamSocket.InputStream);
-
-                
 
                 isConnected = true;
 
@@ -162,6 +187,11 @@ namespace RedLightDesktopUWP
         public void SetOnDisconnect(Func<object> p)
         {
             onDisconnect = p;
+        }
+
+        public void SetOnReconnect(Func<object> p)
+        {
+            onReconnect = p;
         }
 
         public async void SendMessage(String message)
@@ -197,29 +227,21 @@ namespace RedLightDesktopUWP
             string message = "";
             try
             {
-                try
-                {
-
                 
                 while (true)
                 {
-                    await chatReader.LoadAsync(sizeof(byte));
-                    byte character = chatReader.ReadByte();
-                    if (character == 0){
-                        break;
-                    }
-                    message = string.Concat(message,(char)character);
-                    if (message.Equals(""))
-                    {
-                        break;
-                    }
+                    
+                        await chatReader.LoadAsync(sizeof(byte));
+                        byte character = chatReader.ReadByte();
+
+                        if (character == 0)
+                        {
+                            break;
+                        }
+                        message = string.Concat(message, (char)character);               
+
                 }
-                }
-                catch (Exception ex2) when ((uint)ex2.HResult == 0x8000000b)
-                {
-                    //Not sure.
-                    //For catch OutOfBound error from dataReader.
-                }
+                
                 dataRegister.UpdateData(message);
                 WriteDebug($"Message :  {message}");
                 ReceiveStringLoop(chatReader);
@@ -238,6 +260,11 @@ namespace RedLightDesktopUWP
                     {
                         WriteDebug(ex.StackTrace);
                         Disconnect();
+                        if((uint)ex.HResult == 0x8000000b)
+                        {
+                            Connect(lastDevID);
+                            onReconnect();
+                        }
                     }
                 }
             }
