@@ -50,6 +50,7 @@ namespace RedLightDesktopUWP
             App.Current.Suspending += App_Suspending;
             dataRegister = new DataRegister()
                 .SetConditionFontIcon(ref ConditionIcon)
+                .SetConditionFontIcon2(ref ConditionIcon2)
                 .SetConditionTextBox(ref ConditionData)
                 .SetPulseTextBox(ref PulseData)
                 .SetSPO2TextBox(ref SPO2Data)

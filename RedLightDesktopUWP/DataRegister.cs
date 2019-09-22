@@ -25,6 +25,7 @@ namespace RedLightDesktopUWP
     {
 
         public FontIcon conditionIcon { get; private set; }
+        public FontIcon conditionIcon2 { get; private set; }
         public TextBlock conditionText { get; private set; }
         public TextBlock pulseText { get; private set; }
         public TextBlock TempText { get; private set; }
@@ -34,11 +35,14 @@ namespace RedLightDesktopUWP
         private const string ConditionStringGood = "좋음";
         private const string ConditionStringCaution = "주의";
         private const string ConditionStringDanger = "위험";
+        private const string ConditionStringUserAction = "사용자 요청";
         private const string ConditionStringNoConnection = "No Connection";
 
         private const string ConditionIconGood = "\uE76E";
         private const string ConditionIconCaution = "\uE814";
         private const string ConditionIconDanger = "\uEA39";
+        private const string ConditionIconUserAction = "\uF13C";
+        private const string ConditionIconUserActionBase = "\uEA18";
         private const string ConditionIconNoConnection = "\uF384";
 
         private const int geolocationUpdateFreq = 600;
@@ -68,6 +72,12 @@ namespace RedLightDesktopUWP
         public DataRegister SetConditionFontIcon(ref FontIcon fontIcon)
         {
             conditionIcon = fontIcon;
+            return this;
+        }
+
+        public DataRegister SetConditionFontIcon2(ref FontIcon fontIcon)
+        {
+            conditionIcon2 = fontIcon;
             return this;
         }
 
@@ -131,39 +141,56 @@ namespace RedLightDesktopUWP
             {
                 case 0:
                     conditionIcon.Glyph = ConditionIconGood;
+                    conditionIcon2.Glyph = ConditionIconGood;
                     conditionText.Text = ConditionStringGood;
 
                     conditionIcon.Foreground = ConditionColorGood;
+                    conditionIcon2.Foreground = ConditionColorGood;
                     conditionText.Foreground = ConditionColorGood;
                     geolocationUpdateCount -= 1;
                     break;
                 case 1:
                     conditionIcon.Glyph = ConditionIconCaution;
+                    conditionIcon2.Glyph = ConditionIconCaution;
                     conditionText.Text = ConditionStringCaution;
 
                     conditionIcon.Foreground = ConditionColorCaution;
+                    conditionIcon2.Foreground = ConditionColorCaution;
                     conditionText.Foreground = ConditionColorCaution;
                     geolocationUpdateCount = 0;
                     break;
                 case 2:
                     conditionIcon.Glyph = ConditionIconDanger;
+                    conditionIcon2.Glyph = ConditionIconDanger;
                     conditionText.Text = ConditionStringDanger;
 
                     conditionIcon.Foreground = ConditionColorDanger;
+                    conditionIcon2.Foreground = ConditionColorDanger;
                     conditionText.Foreground = ConditionColorDanger;
                     geolocationUpdateCount = 0;
+                    break;
+                case 3:
+                    conditionIcon2.Glyph = ConditionIconUserAction;
+                    conditionIcon.Glyph = ConditionIconUserActionBase;
+                    conditionText.Text = ConditionStringUserAction;
+
+                    conditionIcon.Foreground = ConditionColorDanger;
+                    conditionIcon2.Foreground = ConditionColorDanger;
+                    conditionText.Foreground = ConditionColorDanger;
+                    geolocationUpdateCount -= 1;
                     break;
 
                 default:
                     conditionIcon.Glyph = ConditionIconNoConnection;
+                    conditionIcon2.Glyph = ConditionIconNoConnection;
                     conditionText.Text = ConditionStringNoConnection;
 
                     conditionIcon.Foreground = ConditionColorNoConnection;
+                    conditionIcon2.Foreground = ConditionColorNoConnection;
                     conditionText.Foreground = ConditionColorNoConnection;
                     break;
             }
 
-            return;
 
             if (geolocationUpdateCount < 0)
             {
