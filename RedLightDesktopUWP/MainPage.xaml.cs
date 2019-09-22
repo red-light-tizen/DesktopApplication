@@ -50,6 +50,7 @@ namespace RedLightDesktopUWP
             App.Current.Suspending += App_Suspending;
             dataRegister = new DataRegister()
                 .SetConditionFontIcon(ref ConditionIcon)
+                .SetConditionFontIcon2(ref ConditionIcon2)
                 .SetConditionTextBox(ref ConditionData)
                 .SetPulseTextBox(ref PulseData)
                 .SetSPO2TextBox(ref SPO2Data)
@@ -58,13 +59,22 @@ namespace RedLightDesktopUWP
 
             communicator = new BluetoothCommunicator(guid, ref dataRegister);
 
-            communicator.AddDebugLog(ref debugLog);
+            
             communicator.SetOnDisconnect(
                 () => {
                     isConnected = false;
                     ConnectDeviceButton.Content = "Connect to Selected Device";
                     return true;
                  }
+            );
+
+            communicator.SetOnReconnect(
+                () => {
+                    isConnected = true;
+                    ResetMainUI();
+                    ConnectDeviceButton.Content = "Disconnected from Device";
+                    return true;
+                }
             );
             isConnected = false;
 
@@ -192,7 +202,11 @@ namespace RedLightDesktopUWP
             
             if (isConnected)
             {
-                communicator.Disconnect();
+                lock (communicator)
+                {
+                    communicator.Disconnect();
+                }
+                
                 isConnected = false;
                 ConnectDeviceButton.Content = "Connect to Selected Device";
             }
@@ -200,7 +214,9 @@ namespace RedLightDesktopUWP
             {
                 if (debugCounter > debugCounterLimit)
                 {
+                    communicator.AddDebugLog(ref debugLog);
                     debugLogBorder.Visibility = Visibility.Visible;
+                    
                     debugLog.Items.Add("DebugLogger Activate");
                 }
                 else

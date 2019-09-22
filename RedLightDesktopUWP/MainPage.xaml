@@ -105,7 +105,10 @@
                                     <TextBlock x:Name="ConditionTitle" Text="현재상태" FontSize="70" />
                                 </Viewbox>
                                 <Viewbox Stretch="Uniform" Grid.Row="1" Margin="15">
-                                    <FontIcon x:Name="ConditionIcon" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" />
+                                    <Grid>
+                                        <FontIcon x:Name="ConditionIcon" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" />
+                                        <FontIcon x:Name="ConditionIcon2" Foreground="Gray" FontFamily="Segoe MDL2 Assets" Glyph="&#xF384;" FontSize="230" />
+                                    </Grid>
                                 </Viewbox>
                                 <Viewbox Stretch="Uniform" Grid.Row="2" Margin="15">
                                     <TextBlock x:Name="ConditionData" Foreground="Gray" Text="No Connection" FontSize="85" />
